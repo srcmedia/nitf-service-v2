@@ -1,6 +1,6 @@
-import * as NITF from './NITFService';
+import { NITFService } from './NITFService';
 
-let nitfService = new NITF.NITFService(process.argv);
+let nitfService = new NITFService(process.argv);
 /*
 process.on('SIGINT', nitfService.shutdown);
 process.on('SIGTERM', nitfService.shutdown);
