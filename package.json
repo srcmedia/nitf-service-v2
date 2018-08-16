@@ -2,6 +2,7 @@
   "name": "nitf-service-v2",
   "version": "1.0.0",
   "description": "Refactor of old nitf service fully running in node.",
+  "sideEffects": false,
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,8 +10,7 @@
     "dev": "webpack --mode=development && npm start",
     "prod": "webpack --mode=production && npm start"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Chris Decker",
   "devDependencies": {
     "@types/body-parser": "^1.17.0",
     "@types/dateformat": "^1.0.1",
