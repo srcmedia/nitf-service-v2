@@ -1,21 +1,19 @@
 import * as exp from 'express';
 import * as fs from 'fs';
 import * as bodyParser from 'body-parser';
-import * as dateformat from 'dateformat';
+import { LoggerFactory } from './util/LoggerFactory';
 
 export class NITFService {
-    private static SERVICE_NAME: string = "NITF Service v2";
-    private static LOG_PATH: string = "./logs";
     private static OUT_PATH: string = "./output";
     private static DEFAULT_HOST: string = '0.0.0.0';
     private static DEFAULT_PORT: number = 3000;
 
+    private LOGGER = LoggerFactory.create('NITFService');
     private express: exp.Application;
     private hostOverride: string = null;
     private portOverride: number = null;
 
     constructor(args: string[]) {
-        
         if (args && args[2]) {
             this.hostOverride = args[2];
         }
@@ -34,9 +32,9 @@ export class NITFService {
 
     // Separate start function that logs accordingly.
     public start(): void {
-        this.writeToLog('Starting ' + NITFService.SERVICE_NAME + ' on ' + this.getHost() + ':' + this.getPort());
+        this.LOGGER.writeToLog('Starting on ' + this.getHost() + ':' + this.getPort());
         this.express.listen(this.getPort(), this.getHost(), () => {
-            this.writeToLog(NITFService.SERVICE_NAME + ' Started!');
+            this.LOGGER.writeToLog('Started!');
         });
     }
     
@@ -48,9 +46,9 @@ export class NITFService {
 
             fs.writeFile(NITFService.OUT_PATH + '/'+ req.params.fileName , req.body, (err:  NodeJS.ErrnoException) => {
 
-                if (err) this.writeToLog('Error on ' + req.params.fileName, err);
+                if (err) this.LOGGER.writeToLog('Error on ' + req.params.fileName, err);
 
-                this.writeToLog(req.params.fileName + ' recieved.');
+                this.LOGGER.writeToLog(req.params.fileName + ' recieved.');
             });
 
         });
@@ -60,7 +58,6 @@ export class NITFService {
 
     // Part of setup, makes required output and logging directories if none exist
     private directorySetup(): void {
-        if (!fs.existsSync(NITFService.LOG_PATH)) fs.mkdirSync(NITFService.LOG_PATH);
         if (!fs.existsSync(NITFService.OUT_PATH)) fs.mkdirSync(NITFService.OUT_PATH);
     }
 
@@ -72,26 +69,5 @@ export class NITFService {
     // Simple getter for the port, will return arg port if defined
     private getPort(): number {
         return this.portOverride ? this.portOverride : NITFService.DEFAULT_PORT;
-    }
-
-    /**
-     * Simple logging method
-     * @param message First line of log message, should be a simple string
-     * @param obj Optional object, passed into JSON.stringify
-     */
-    private writeToLog(message: String, obj?: any) {
-        let timestamp: string = '[' + dateformat(new Date(), 'HH:MM:ss.l') + ']';
-
-        if (obj) {
-            message += '\n\tLogged Object: ' + JSON.stringify(obj);
-        }
-
-        fs.appendFile(
-            NITFService.LOG_PATH + '/nitf-service-' + dateformat(new Date(), 'yyyy-mm-dd') + '.log',
-            timestamp +': ' + message + '\n',
-            (err: NodeJS.ErrnoException) => {
-                if (err) console.log(err);
-            }
-        );
-    }
+    }    
 }
