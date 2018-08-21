@@ -22,6 +22,7 @@ export class NITFService {
         }
 
         this.express = exp();
+        // without this, express craps the bed when it gets XML
         this.express.use(bodyParser.raw({
             inflate: true,
             type: 'application/xml'

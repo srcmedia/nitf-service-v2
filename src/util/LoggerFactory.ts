@@ -1,6 +1,9 @@
 import * as dateformat from 'dateformat';
 import * as fs from 'fs';
 
+/**
+ * A simple factory class to construct and maintain a list of loggers
+ */
 export class LoggerFactory {
     private static instances:Logger[] = [];
 
@@ -17,6 +20,9 @@ export class LoggerFactory {
     }
 }
 
+/**
+ * A simple logging class, intentionally private to force devs to use factory method instead
+ */
 class Logger {
     private static LOG_PATH: string = "./logs";
 
